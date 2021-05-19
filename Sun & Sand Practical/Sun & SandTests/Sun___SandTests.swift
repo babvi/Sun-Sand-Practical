@@ -25,17 +25,29 @@ class ___FILEBASENAMEASIDENTIFIER___: XCTestCase {
         XCTAssertNil(groupViewModel.userDetail.value)
     }
     
+    /// Necessary details must not be empty
     func testCheckMandatoryFieldValue() {
-        
         NetworkManager.shared.get(stringUrl: AppUrls.getUsers(page: 0, numberOfRecord: 50)) { (response: BaseModel<[User]>?, error: CustomError?) in
             guard let users = response?.results else {
                 return
             }
             for user in users {
-                XCTAssertNil(user.name?.first, "First name should not be null")
-                XCTAssertNil(user.name?.last, "Last name should not be null")
-                XCTAssertNil(user.gender, "Gender should not be null")
+                XCTAssertNotNil(user.name?.first, "First name should not be null")
+                XCTAssertNotNil(user.name?.last, "Last name should not be null")
+                XCTAssertNotNil(user.gender, "Gender should not be null")
             }
+        }
+    }
+    
+    /// Check whether placeholder is empty or not
+    func testCheckPlaceholderImage() {
+        XCTAssertNotNil(UIImage(named: "placeholder"), "Placeholder image is not exists")
+    }
+    
+    /// Checking first viewcontroller must be List view controller.
+    func testStartingViewController() {
+        if let navController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? UINavigationController, let controller = navController.viewControllers.first {
+            XCTAssertTrue(((controller as? ListViewController) != nil), "First controller must be list view controller")
         }
     }
 }
