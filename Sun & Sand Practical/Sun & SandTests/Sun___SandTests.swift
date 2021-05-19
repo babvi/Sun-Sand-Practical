@@ -24,5 +24,18 @@ class ___FILEBASENAMEASIDENTIFIER___: XCTestCase {
         let groupViewModel = DetailViewModel()
         XCTAssertNil(groupViewModel.userDetail.value)
     }
-
+    
+    func testCheckMandatoryFieldValue() {
+        
+        NetworkManager.shared.get(stringUrl: AppUrls.getUsers(page: 0, numberOfRecord: 50)) { (response: BaseModel<[User]>?, error: CustomError?) in
+            guard let users = response?.results else {
+                return
+            }
+            for user in users {
+                XCTAssertNil(user.name?.first, "First name should not be null")
+                XCTAssertNil(user.name?.last, "Last name should not be null")
+                XCTAssertNil(user.gender, "Gender should not be null")
+            }
+        }
+    }
 }
